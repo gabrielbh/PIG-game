@@ -1,0 +1,189 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+    
+    <!-- you may want to add your own keywords here, for search engine optimization -->
+    <meta name="Keywords" content="INTRODUCTION TO ARTIFICIAL INTELLIGENCE, computer science, the hebrew university of jerusalem, project"/ >
+    <link rel="stylesheet" type="text/css" href="http://www.cs.huji.ac.il/~ai/projects/2012/css/default.css" />      <!-- Don't change this line!-->
+    <title>The Game Of PIG</title>
+</head>
+
+<body>
+<div class="main">
+    <div class="gfx">
+        <a href="http://www.cs.huji.ac.il/~ai/projects/" alt="Introduction to Artificial Intelligence The Hebrew University of Jerusalem"></a>  <!-- Don't change this line!--> 
+    </div>
+    <div class="title">
+        <h1>The Game Of PIG </h1>
+		    <p class="main_image">
+	   <center><img src="files\PigIcon.jpg" width="100" height="100" alt="main" align="middle"></center>
+   </p>
+        <h4>Final project by </h4>
+        <h3>
+            <a href="mailto:email1@cs.huji.ac.il" > Amit Azulay  </a> &nbsp &nbsp
+            <a href="mailto:email2@cs.huji.ac.il" > Gabriel Ben Hur  </a> &nbsp &nbsp
+			<a href="mailto:email3@cs.huji.ac.il" > Hillel Kholmyansky </a> &nbsp &nbsp
+            <a href="mailto:email4@cs.huji.ac.il" > Ofir Aharoni </a>
+        </h3>     
+    </div>
+   <hr>
+   
+
+
+    <div class="content">
+    <h2>Introduction</h2>
+    <p>
+    The object of the jeopardy dice game Pig is to be the first player to reach 100 points. Each player's turn consists of repeatedly rolling a die. After each roll, the player is faced with two choices: 
+	<p>1)	roll again:
+	. If the player rolls a 1, the player scores nothing and it becomes the opponent's turn. 
+	. If the player rolls a number other than 1, the number is added to the player's turn total and the player's turn continues. 
+	<p>2)	Hold:
+	. If the player holds (he decline to roll again), the turn total, the sum of the rolls during the turn, is added to the player's score, and it becomes the opponent's turn. 
+	<p>In this project we tried to answer the question "how can we play the game optimally?" by using different heuristics and learning algorithms.
+    </p>
+	<p> For a better understanding the game, we used JS to make a simple visual game emulator - </p>
+	<form action="files/PigGamePlay.html">
+    <center><input type="submit" value="Play Simple Pig Game"/></center>
+	</form>
+	
+	<h2> Approach and Method </h2>
+    <p>
+	We implemented various of heuristic players, each player with his own unique decision process and in addition implemented optimal player by using value iteration.
+	The players are as follows:
+	<p>
+	<b>Expecti Player</b> - his tactic is to keep rolling the dice until his current turn scoring sum is higher or equal to 20 points. Of course you can easily find
+	a scenario where this policy will failed - Your opponent has a score of 99 and will likely win in the next turn. You have a score of 75 and
+	a turn total of 22. Following the "hold at 20" policy and ending your turn with a score of 97 is a really bad tactic, because the probability of 
+	winning if you roll once more is higher than the probability of winning if the other player is allowed to roll.
+	That is why we also implemented another player, the "Goobi Player", which is an upgrade of the "hold at 20" tactic. 
+	"Goobi Player" rolls the die if the turn score is less than 20 or in case the number of throws is under 5. 
+	</p>
+	<P>
+	<b>Heuristic Player</b> - this player determines his actions based on his, and other players scores.his default tactic will be the "hold to 20" tactic. 
+	In case our total score is under 80, and an opponent with a higher than 80 total score exist, we won't stop until our turn score will be higher than 30.
+	In case of a total score that is higher than 80, and a lead of at least 10 points, we will be satisfied with a turn score which is higher than 15.
+	</p>
+	<p>
+	<b>T Scoring Player</b> - this player policy allows to vary hold values according to a desired pace towards the goal. We would want to reach the goal after t turns.
+	Let t_s be the number of scoring turns so far, that means turns that have increased a player's score. One scheme chooses a hold value that approximately divides
+	the remaining points to the goal, (100 ? player_score), by the remaining number of scoring turns in the policy, t - t_s. Letting h(player_score,t_s ) be 
+	the hold value when a player has score i and has taken t_s  scoring turns, then we have:<p> h(player_score,t_s ) = celling((100 - player_score) / (t - t_s)</p>
+	</p>
+	<p>
+	<b>Keep pace and end Race Player</b> - The player choose to roll the dice in two cases:
+	<p>a. If either player's score is e points or less from the goal.</p>
+	<p>b. If the turn score is less than the hold value which calculaed as follows:
+	<p>We compute a hold value by taking a constant c and changing it proportionally to the score difference. If your score is ahead or behind, you use a lower 
+	or a higher hold value, respectively:</p>
+	<p>turn score < c + (opponent_score - player_Score) / d</p>
+	</p>
+	<p>
+	<b>Value iteration Player</b> - Value iteration is a method of computing an optimal MDP policy and its value. It iteratively improves estimates of the value
+	of being in each state until the estimates are "good enough" (smaller than a defined "DELTA").
+	<p>The goal is to compute which action to take in each state to maximize future rewards.</p>
+	<p>
+	<b>Q - Learning Player</b> - The Q-Learning finds a policy that is optimal in the sense that it maximizes the expected value of the total reward beginning from
+	the current state, over all successive steps, for any finite MDP.
+	We will use different alpha and alpha decay rates in order to mesaure the Q-Learning player performance againts his opponent.
+	However, beacuse this type of game has alot of possible states, we excpect that this player learning process will not be effective.
+	</p>
+	<p>
+	<b>Q - Learning Approximate Player</b> - This player learns weights for features of states, where many states might share the same features.
+	Beacuase there alot of possible states in this type of game, we excpect that this player result will be better than the Q-Learning player.
+	</p>
+	<p>
+
+    
+	</p>  
+	<h2> Results </h2>
+    <p>
+    At first, we tried our top 5 best players and let them compete each other.
+	In the following graph we've checked the winning rate of the 
+	"Value Iteration" learner, "endRace Player", "tScoring Player", "Heuristic Player" and the "Goobi Player".
+	These results computed with 1,000,000 games.
+	We noticed a surprising result. The "endRace Player" performs better than the "Value Iteration Player"! 
+    </p>
+    <center><img src="files\precentageBars.jpg" alt="precentageBars" width="350"></center> 
+    <p>
+    Next, we wanted to see the connection between our player score (i) and the opponent score (j), to our player probability to win the game (p) as observed
+	by the Value Iteration player.
+	The results are as follows:
+    </p>
+    <center><img src="files\Graph - ijprob.png" alt="Graph - ijprob" width="350"></center>
+	<p>
+	We also wanted to see the "thinking process" of the Value Iteration player, i.e. in which cases he decides to roll the dice and in which
+	cases to hold. The results are as follows:
+	</p>
+	<center><img src="files\GraphForIJK.jpg" alt="GraphForIJK" width="350"></center>
+	<p>In this graph we have the player score (i), the opponent score (j) and the player current turn score (k). We see that the Value Iteration
+	player decides to roll the dice in each state (= (i,j,k)) that is below the surface and hold otherwise.</p>	
+    <!--
+    ***
+    note that the page width is 620px, so limit your images width to 620!
+    ***
+    -->    
+         
+    <h2>Conclusions</h2>
+    <p> 
+	<ol>
+	<li>
+	The Value iteration player is the best learning algorithm for this type of game whereas the MDP is known. 
+	We have computed the optimal policy for two player's game using Value Iteration. 
+	However, we saw that the Value Iteration is not the best approach while competing against multiple opponents.
+	</li>
+	<li>
+	As expected, we saw that the probability of winning goes in the direct ratio of the player's score i.e. 
+	The probability increases as the score increases, and in reverse ratio to the opponent's score.
+	</li>
+	<li>
+	The Q Learning player results were poor which is understandable, as we learned that the Q Learning is not
+	effective in games that have a high number of states to choose from.
+	</li>
+	<li>
+	We didn't found the Approximate Q Learning player more suitable than the Q Learning player in this type of game.
+	As we showed, it didn't yield better results as expected. 
+	</li>
+	</ol> 
+    </p>
+   
+    <h2>Additional Information</h2>
+    <p>
+        <ul>
+            <li><a href="files/report.pdf"> Link to the report (English)</a></li>
+        </ul>
+   </p>
+
+   <h2>References</h2>
+   <p>
+   <b>Pig (dice game)</b> -
+   <p>
+	https://en.wikipedia.org/wiki/Pig_(dice_game)</p>
+	<p>
+	Todd W. Neller and Clifton G.M. Presser. Optimal Play of the Dice Game Pig, The UMAP Journal 25(1) (2004), pp. 25-47.</p>
+	<p>
+	Reiner Knizia, Dice Games Properly Explained. Elliot Right-Way Books, 1999</p>
+	<p>
+	Todd W. Neller, Clifton G.M. Presser, Ingrid Russell, Zdravko Markov. Pedagogical Possibilities for the Dice Game Pig. Journal of 
+	Computing Sciences in Colleges, vol. 21, no. 6, pp. 149-161, June 2006.</p>
+	<p>
+	Todd W. Neller and Clifton G.M. Presser. Practical Play of the Dice Game Pig, The UMAP Journal 31(1) (2010), pp. 5-19.Todd W. Neller and Clifton G.M.
+	Presser. Pigtail: A Pig Addendum, The UMAP Journal 26(4) (2005), pp. 443-458.</p>
+	<p>
+	<b>Value Iteration</b> - https://artint.info/html/ArtInt_227.html</p>
+	<p>
+	<b>Markov decision process</b> - https://en.wikipedia.org/wiki/Markov_decision_process</p>
+	<p>
+	<b>Q-Learning</b> - https://en.wikipedia.org/wiki/Q-learning</p>
+
+   </p>   
+   </div>
+   
+    <!-- *Don't* delete the below code, copyright issues...  -->    
+    <div class="footer">		
+        <span class="right"><a href="http://templates.arcsin.se/">Website template</a> by <a href="http://arcsin.se/">Arcsin</a>   </span>
+   </div>
+</div>
+</body>
+</html>
